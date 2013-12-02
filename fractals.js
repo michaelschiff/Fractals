@@ -11,8 +11,8 @@ canvas.addEventListener('mousemove', handlers.onDrag);
 canvas.addEventListener('mouseup', handlers.onUp);
 
 //set zoom and draw initial image
-var zoom = 1000;
-var center_x = -500;
+var zoom = 250;
+var center_x = -100;
 var center_y = 0;
 draw(mandelbrot, zoom, center_x, center_y);
 
