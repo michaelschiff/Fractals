@@ -10,7 +10,7 @@ angular.module('fractal-viewer', [])
             $scope.center_x = -0.747;
             $scope.center_y = .0995;
         },
-        template:"<canvas></canvas>",
+        template: '<canvas></canvas>',
         replace:true,
         link: function(scope, element, attrs) {
             console.log("directive link loaded");
@@ -23,7 +23,12 @@ angular.module('fractal-viewer', [])
             var zoom = scope.zoom;
             var center_x = scope.center_x;
             var center_y = scope.center_y;
+            c.font = "bold 12px sans-serif";
+            c.textBaseline = "bottom";
+            c.textAlign = "right";
+
             draw(mandelbrot, zoom, center_x, center_y);
+            c.fillText("center: "+center_x+"+"+center_y+"i", 475, 475);
 
             //draws the escape image of f at zoom scale, centered on (cx,cy).
             //The fractal never actually moves, (cx,cy) is the complex number
