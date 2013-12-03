@@ -4,26 +4,23 @@ var c = canvas.getContext("2d");
 var imgData = c.createImageData(500, 500);
 var pixels = imgData.data;
 
-//setup the callbacks. need to know about canvas and and fractal fn
-var handlers = new callbacks(canvas, mandelbrot);
-canvas.addEventListener('mousedown', handlers.onClick);
-canvas.addEventListener('mousemove', handlers.onDrag);
-canvas.addEventListener('mouseup', handlers.onUp);
-
 //set zoom and draw initial image
-var zoom = 250;
-var center_x = -100;
-var center_y = 0;
+var zoom = 890000;
+var center_x = -0.747;
+var center_y = .0995;
 draw(mandelbrot, zoom, center_x, center_y);
 
-//draws the escape image of f, centered on (cx,cy), at zoom scale. 
+//draws the escape image of f at zoom scale, centered on (cx,cy).
+//The fractal never actually moves, (cx,cy) is the complex number
+//that our center pixel corresponds to.  modifying center values 
+//shifts around our window into the complex plane.
 function draw(f, zoom, cx, cy) {
     for (var x = 0; x < 500; x++) {
 		var x0 = x-250;
         for (var y = 0; y < 500; y++) {
-		    var y0 = y-250;
-            var iters = f((x0+cx)/zoom,(y0+cy)/zoom);
-            color(x,y, 0, 255-iters, iters, 255);
+		    var y0 = 250-y;
+            var iters = f((x0/zoom)+cx,(y0/zoom)+cy);
+            color(x,y, (50+iters*9)%255, (175+iters*23)%255, (200+iters*37)%255, 255);
         }
     }
     c.putImageData(imgData, 0,0);
@@ -51,34 +48,4 @@ function mandelbrot(px,py) {
         iteration = iteration + 1;
     }
     return iteration;
-}
-
-//callbacks for dragging around the image
-function callbacks(canvas, fn) {
-	
-	this.ox = null;
-	this.oy = null;
-	this.cx = 0;
-	this.cy = 0;
-	this.clicked = false;
-	
-	this.onClick = function(event) {
-		this.clicked = true;
-		this.ox = event.clientX;
-		this.oy = event.clientY;
-	};
-	
-	this.onDrag = function(event) {
-		if (this.clicked) {
-			this.cx = event.clientX - this.ox;
-			this.cy = event.clientY - this.oy;
-			draw(fn, zoom, center_x-this.cx, center_y-this.cy);
-		}
-	};
-	
-	this.onUp = function(event) {
-		this.clicked = false;
-		center_x -= this.cx;
-		center_y -= this.cy;
-	};
 }
