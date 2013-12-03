@@ -7,10 +7,18 @@ angular.module('fractal-viewer', [])
         controller: function($scope, $element, $attrs) {
             console.log("directive controller laoded");
             $scope.zoom = 890000;
+            $scope.zoom_scale = 1;
             $scope.center_x = -0.747;
             $scope.center_y = .0995;
+
+            $element[0].addEventListener("mousedown", function (evt) {
+                console.log(evt.clientX - $element[0].offsetLeft);
+                //evt.clientY - $element.offsetTop);
+                
+            });
+
         },
-        template: '<canvas></canvas>',
+        template: '<canvas ng-click="click()"></canvas>',
         replace:true,
         link: function(scope, element, attrs) {
             console.log("directive link loaded");
@@ -19,16 +27,12 @@ angular.module('fractal-viewer', [])
             var imgData = c.createImageData(500, 500);
             var pixels = imgData.data;
 
-            //set zoom and draw initial image
-            var zoom = scope.zoom;
-            var center_x = scope.center_x;
-            var center_y = scope.center_y;
             c.font = "bold 12px sans-serif";
             c.textBaseline = "bottom";
             c.textAlign = "right";
 
-            draw(mandelbrot, zoom, center_x, center_y);
-            c.fillText("center: "+center_x+"+"+center_y+"i", 475, 475);
+            draw(mandelbrot, scope.zoom, scope.center_x, scope.center_y);
+            c.fillText("center: "+scope.center_x+"+"+scope.center_y+"i", 475, 475);
 
             //draws the escape image of f at zoom scale, centered on (cx,cy).
             //The fractal never actually moves, (cx,cy) is the complex number
@@ -36,9 +40,9 @@ angular.module('fractal-viewer', [])
             //shifts around our window into the complex plane.
             function draw(f, zoom, cx, cy) {
                 for (var x = 0; x < 500; x++) {
-                            var x0 = x-250;
+                    var x0 = x-250;
                     for (var y = 0; y < 500; y++) {
-                                var y0 = 250-y;
+                        var y0 = 250-y;
                         var iters = f((x0/zoom)+cx,(y0/zoom)+cy);
                         color(x,y, (50+iters*9)%255, (175+iters*23)%255, (200+iters*37)%255, 255);
                     }
@@ -69,6 +73,11 @@ angular.module('fractal-viewer', [])
                 }
                 return iteration;
             }
+
+            scope.$watch('zoom', function() { 
+                draw(mandelbrot, scope.zoom, scope.center_x, scope.center_y); 
+                c.fillText("center: "+scope.center_x+"+"+scope.center_y+"i", 475, 475);
+            });
         }
      };
 });
