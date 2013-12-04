@@ -6,10 +6,10 @@ angular.module('fractal-viewer', [])
         scope: {},
         controller: function($scope, $element, $attrs) {
             console.log("directive controller laoded");
-            $scope.zoom = 890000;
-            $scope.zoom_scale = 0.5;
-            $scope.center_x = -0.747;
-            $scope.center_y = .0995;
+            $scope.zoom = 250;
+            $scope.zoom_scale = 2;
+            $scope.center_x = -.5;
+            $scope.center_y = 0;
 
             $element[0].addEventListener("mousedown", function (evt) {
                 var clickx = (evt.clientX - $element[0].offsetLeft) - 250;
@@ -34,7 +34,7 @@ angular.module('fractal-viewer', [])
             c.textAlign = "right";
 
             draw(mandelbrot, scope.zoom, scope.center_x, scope.center_y);
-            c.fillText("center: "+scope.center_x+"+"+scope.center_y+"i", 475, 475);
+            c.fillText("center: "+scope.center_x+"+"+scope.center_y+"i", 475, 575);
 
             //draws the escape image of f at zoom scale, centered on (cx,cy).
             //The fractal never actually moves, (cx,cy) is the complex number
@@ -46,7 +46,7 @@ angular.module('fractal-viewer', [])
                     for (var y = 0; y < 500; y++) {
                         var y0 = 250-y;
                         var iters = f((x0/zoom)+cx,(y0/zoom)+cy);
-                        color(x,y, (50+iters*9)%255, (175+iters*23)%255, (200+iters*37)%255, 255);
+                        color(x,y, (50+iters*2)%255, (175+iters*93)%255, (200+iters*5)%255, 255);
                     }
                 }
                 c.putImageData(imgData, 0,0);
@@ -75,14 +75,12 @@ angular.module('fractal-viewer', [])
                 }
                 return iteration;
             }
-
+            
             function refresh() {
                 console.log("refresh");
                 draw(mandelbrot, scope.zoom, scope.center_x, scope.center_y); 
                 c.fillText("center: "+scope.center_x+"+"+scope.center_y+"i", 475, 475);
             }
-
-
             scope.$watch('zoom', refresh);
             scope.$watch('center_x', refresh);
             scope.$watch('center_y', refresh);
