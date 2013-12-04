@@ -7,14 +7,16 @@ angular.module('fractal-viewer', [])
         controller: function($scope, $element, $attrs) {
             console.log("directive controller laoded");
             $scope.zoom = 890000;
-            $scope.zoom_scale = 1;
+            $scope.zoom_scale = 0.5;
             $scope.center_x = -0.747;
             $scope.center_y = .0995;
 
             $element[0].addEventListener("mousedown", function (evt) {
-                console.log(evt.clientX - $element[0].offsetLeft);
-                //evt.clientY - $element.offsetTop);
-                
+                var clickx = (evt.clientX - $element[0].offsetLeft) - 250;
+                var clicky = 250 - (evt.clientY - $element[0].offsetTop);
+                $scope.center_x = $scope.center_x + (clickx/$scope.zoom);
+                $scope.center_y = $scope.center_y + (clicky/$scope.zoom);
+                $scope.zoom = $scope.zoom * $scope.zoom_scale;
             });
 
         },
@@ -74,10 +76,16 @@ angular.module('fractal-viewer', [])
                 return iteration;
             }
 
-            scope.$watch('zoom', function() { 
+            function refresh() {
+                console.log("refresh");
                 draw(mandelbrot, scope.zoom, scope.center_x, scope.center_y); 
                 c.fillText("center: "+scope.center_x+"+"+scope.center_y+"i", 475, 475);
-            });
+            }
+
+
+            scope.$watch('zoom', refresh);
+            scope.$watch('center_x', refresh);
+            scope.$watch('center_y', refresh);
         }
      };
 });
