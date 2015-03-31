@@ -46,7 +46,7 @@ angular.module('fractal-viewer', [])
                     for (var y = 0; y < 500; y++) {
                         var y0 = 250-y;
                         var iters = f((x0/zoom)+cx,(y0/zoom)+cy);
-                        color(x,y, (50+iters*2)%255, (175+iters*93)%255, (200+iters*5)%255, 255);
+                        color(x,y, (50+iters*3)%255, (175+iters*30)%255, (200+iters*100)%255, 255);
                     }
                 }
                 c.putImageData(imgData, 0,0);
@@ -63,13 +63,13 @@ angular.module('fractal-viewer', [])
 
             //fractal fn
             function mandelbrot(px,py) {
-                var x = 0;
-                var y = 0;
+                var x = px;
+                var y = py;
                 var iteration = 0;
                 var max_iteration = 255;
-                while ( x*x + y*y < 2*2 && iteration < max_iteration ) {
-                    var xtemp = x*x - y*y + px;
-                    y = 2*x*y + py;
+                while ( (x*x + y*y) < 6 && iteration < max_iteration ) {
+                    var xtemp = x*x - y*y + 0.8;
+                    y = 2*x*y + 0.8;  
                     x = xtemp;
                     iteration = iteration + 1;
                 }
